@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:html';
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,7 +34,7 @@ class _WinnersState extends State<Winners> {
   }
 
   List Result = [];
-
+bool loading = false;
   getdata() {
     FirebaseFirestore.instance
         .collection('event')
@@ -44,34 +49,300 @@ class _WinnersState extends State<Winners> {
       setState(() {});
     });
   }
+  List<String> columns = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "AA",
+    "AB",
+    "AC",
+    "AD",
+    "AE",
+    "AF",
+    "AG",
+    "AH",
+    "AI",
+    "AJ",
+    "AK",
+    "AL",
+    "AM",
+    "AN",
+    "AO",
+    "AP",
+    "AQ",
+    "AR",
+    "AS",
+    "AT",
+    "AU",
+    "AV",
+    "AW",
+    "AX",
+    "AY",
+    "AZ",
+    "BA",
+    "BB",
+    "BC",
+    "BD",
+    "BE",
+    "BF",
+    "BG",
+    "BH",
+    "BI",
+    "BJ",
+    "BK",
+    "BL",
+    "BM",
+    "BN",
+    "BO",
+    "BP",
+    "BQ",
+    "BR",
+    "BS",
+    "BT",
+    "BU",
+    "BV",
+    "BW",
+    "BX",
+    "BY",
+    "BZ",
+    "CA",
+    "CB",
+    "CC",
+    "CD",
+    "CE",
+    "CF",
+    "CG",
+    "CH",
+    "CI",
+    "CJ",
+    "CK",
+    "CL",
+    "CM",
+    "CN",
+    "CO",
+    "CP",
+    "CQ",
+    "CR",
+    "CS",
+    "CT",
+    "CU",
+    "CV",
+    "CW",
+    "CX",
+    "CY",
+    "CZ",
+    "DA",
+    "DB",
+    "DC",
+    "DD",
+    "DE",
+    "DF",
+    "DG",
+    "DH",
+    "DI",
+    "DJ",
+    "DK",
+    "DL",
+    "DM",
+    "DN",
+    "DO",
+    "DP",
+    "DQ",
+    "DR",
+    "DS",
+    "DT",
+    "DU",
+    "DV",
+    "DW",
+    "DX",
+    "DY",
+    "DZ",
+    "EA",
+    "EB",
+    "EC",
+    "ED",
+    "EE",
+    "EF",
+    "EG",
+    "EH",
+    "EI",
+    "EJ",
+    "EK",
+    "EL",
+    "EM",
+    "EN",
+    "EO",
+    "EP",
+    "EQ",
+    "ER",
+    "ES",
+    "ET",
+    "EU",
+    "EV",
+    "EW",
+    "EX",
+    "EY",
+    "EZ",
+    "FA",
+    "FB",
+    "FC",
+    "FD",
+    "FE",
+    "FF",
+    "FG",
+    "FH",
+    "FI",
+    "FJ",
+    "FK",
+    "FL",
+    "FM",
+    "FN",
+    "FO",
+    "FP",
+    "FQ",
+    "FR",
+    "FS",
+    "FT",
+    "FU",
+    "FV",
+    "FW",
+    "FX",
+    "FY",
+    "FZ",
+  ];
+  bool called = false;
 
-  // getEvent() async {
-  //   QuerySnapshot? regusr =
-  //       await FirebaseFirestore
-  //       .instance
-  //       .collection(
-  //       'event')
-  //       .where('date',
-  //       isGreaterThanOrEqualTo:
-  //       yesterday).where('date',isLessThanOrEqualTo: today)
-  //       .get().then((value) {
-  //     value.docs.forEach((element) {
-  //     print(element.id);
-  //     Events.add(element.id);
-  //     currentEventId=element.id;
-  //       });
-  //         });}
+  List<String> selectedFields = [
+    "Join Date", "Name", "Mobile Number",'Job',"district","Place",
+
+    //  "password",
+
+    //"mobno",
+    // "status",
+  ];
+  getPurchases(QuerySnapshot<Map<String, dynamic>> data) async {
+    int i = 1;
+    var excel = Excel.createExcel();
+    // var excel = Excel.createExcel();
+    Sheet sheetObject = excel[widget.event['eventName']];
+    CellStyle cellStyle = CellStyle(
+        backgroundColorHex: "#ffffff",
+        fontFamily: getFontFamily(FontFamily.Calibri));
+    if (data.docs.length > 0) {
+      var cell = sheetObject.cell(CellIndex.indexByString("A1"));
+      cell.value = 'SL NO'; // dynamic values support provided;
+      cell.cellStyle = cellStyle;
+      Map<String, dynamic> dt = data.docs[0].data();
+      // print(dt.keys.toList().length);
+      // print(dt.keys.toList());
+      int k = 0;
+      for (int n = 0; n < selectedFields.toList().length; n++) {
+        if (selectedFields.contains(selectedFields.toList()[n])) {
+          var cell =
+          sheetObject.cell(CellIndex.indexByString("${columns[k + 1]}1"));
+          cell.value =
+          selectedFields.toList()[n]; // dynamic values support provided;
+          cell.cellStyle = cellStyle;
+          k++;
+        }
+      }
+    }
+
+    for (DocumentSnapshot<Map<String, dynamic>> doc in data.docs) {
+      int l = 0;
+      var cell = sheetObject.cell(CellIndex.indexByString("A${i + 1}"));
+      cell.value = i.toString(); // dynamic values support provided;
+      cell.cellStyle = cellStyle;
+      // double amt=0;
+      // double commission=0;
+      // String shopsId='';
+      Map<String, dynamic> dt = data.docs[0].data();
+      Map<String, dynamic> dta = doc.data()!;
+      // print("hereeee");
+      for (int n = 0; n < selectedFields.toList().length; n++) {
+        if (selectedFields.contains(selectedFields.toList()[n])) {
+          var cell = sheetObject
+              .cell(CellIndex.indexByString("${columns[l + 1]}${i + 1}"));
+
+          // if (dta[dt.keys.toList()[n]].runtimeType.toString() == "Timestamp") {
+          if (selectedFields.toList()[n] == "joinDate") {
+            cell.value = dta[selectedFields.toList()[n]].toDate().toString(); //
+            cell.cellStyle = cellStyle;
+          } else {
+            cell.value = dta[selectedFields.toList()[n]].toString();
+            cell.cellStyle = cellStyle;
+          }
+          l++;
+        }
+
+        //    dynamic values support provided;
+
+      }
+
+      i++;
+    }
+
+    excel.setDefaultSheet('Level Income');
+    var fileBytes = excel.encode();
+    File? file;
+
+    final content = base64Encode(fileBytes!);
+    final anchor = AnchorElement(
+        href: "data:application/octet-stream;charset=utf-16le;base64,$content")
+      ..setAttribute("download", "FlexiBond Event .xlsx")
+      ..click();
+  }
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(onPressed: (){
-
-
-
-
-          }, icon: Icon(Icons.download))
+          IconButton(
+              onPressed: () async {
+                setState(() {
+                  loading = true;
+                });
+                QuerySnapshot<Map<String, dynamic>> data =
+                await FirebaseFirestore.instance
+                    .collection('event')
+                        .doc(widget.event)
+                        .collection('users')
+                        .get();
+                await getPurchases(data);
+                setState(() {
+                  loading = false;
+                });
+              },
+              icon: Icon(Icons.download))
         ],
         backgroundColor: Colors.black,
         elevation: 7,
