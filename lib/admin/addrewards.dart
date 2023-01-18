@@ -146,7 +146,6 @@ class _RewardsState extends State<Rewards> {
                     Container(
                       width: double.infinity,
                       child: TextFormField(
-                        keyboardType: TextInputType.number,
                         obscureText: false,
                         controller: prizeController,
                         decoration: InputDecoration(

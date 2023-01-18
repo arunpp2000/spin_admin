@@ -135,7 +135,6 @@ class _PrizeViewState extends State<PrizeView> {
                         //   }
                         //   return null;
                         // },
-                        keyboardType: TextInputType.number,
                         obscureText: false,
                         controller: prizeController,
                         cursorColor: Colors.black,
