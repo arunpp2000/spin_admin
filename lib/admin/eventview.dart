@@ -212,6 +212,10 @@ class _EventViewState extends State<EventView> {
                     title: Center(
                       child: Column(
                         children: [
+
+
+
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
