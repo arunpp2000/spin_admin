@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../fucntions.dart';
 import '../utils.dart';
 
-
 class PrizeView extends StatefulWidget {
   final String id;
   PrizeView({Key? key, required this.id}) : super(key: key);
@@ -48,6 +47,7 @@ class _PrizeViewState extends State<PrizeView> {
   int selectedindex = 0;
   String? e;
   List rewards = [];
+  final ScrollController sroll = ScrollController();
   @override
   Widget build(BuildContext context) {
     var scrHeight = Utils().getScreenSize().height;
@@ -74,6 +74,7 @@ class _PrizeViewState extends State<PrizeView> {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: SingleChildScrollView(
+          controller: sroll,
           child: Column(children: [
             Padding(
               padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
@@ -139,12 +140,12 @@ class _PrizeViewState extends State<PrizeView> {
                         controller: prizeController,
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
-                          labelText: 'Prize Name',
+                          labelText: 'Category Name',
                           labelStyle: GoogleFonts.outfit(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
-                          hintText: 'Enter the Prize Name',
+                          hintText: 'Enter the Category Name',
                           hintStyle: GoogleFonts.outfit(
                               color: Colors.grey,
                               fontSize: 16,
@@ -378,7 +379,7 @@ class _PrizeViewState extends State<PrizeView> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Prize  :  ${rewards[index]['prize']}',
+                                                  'Category  :  ${rewards[index]['prize']}',
                                                   style: GoogleFonts.outfit(
                                                       fontWeight:
                                                           FontWeight.w600),

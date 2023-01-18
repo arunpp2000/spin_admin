@@ -42,6 +42,8 @@ dependencies:
   google_fonts:
   excel:
   intl:
+  path_provider:
+  open_file: ^3.2.1
 
 dev_dependencies:
   flutter_test:

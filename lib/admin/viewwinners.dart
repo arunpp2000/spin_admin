@@ -1,19 +1,22 @@
 import 'dart:convert';
-import 'dart:html';
-
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:excel/excel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Winners extends StatefulWidget {
   var event;
+  var eventName;
 
   Winners({
     Key? key,
     required this.event,
+    required this.eventName,
   }) : super(key: key);
 
   @override
@@ -34,7 +37,8 @@ class _WinnersState extends State<Winners> {
   }
 
   List Result = [];
-bool loading = false;
+  bool loading = false;
+  String? eventName;
   getdata() {
     FirebaseFirestore.instance
         .collection('event')
@@ -49,6 +53,7 @@ bool loading = false;
       setState(() {});
     });
   }
+
   List<String> columns = [
     "A",
     "B",
@@ -236,7 +241,7 @@ bool loading = false;
   bool called = false;
 
   List<String> selectedFields = [
-    "Join Date", "Name", "Mobile Number",'Job',"district","Place",
+    "joinDate", "name", "mobNo", 'job', "district", "place", 'prize'
 
     //  "password",
 
@@ -247,7 +252,7 @@ bool loading = false;
     int i = 1;
     var excel = Excel.createExcel();
     // var excel = Excel.createExcel();
-    Sheet sheetObject = excel[widget.event['eventName']];
+    Sheet sheetObject = excel['event'];
     CellStyle cellStyle = CellStyle(
         backgroundColorHex: "#ffffff",
         fontFamily: getFontFamily(FontFamily.Calibri));
@@ -262,9 +267,9 @@ bool loading = false;
       for (int n = 0; n < selectedFields.toList().length; n++) {
         if (selectedFields.contains(selectedFields.toList()[n])) {
           var cell =
-          sheetObject.cell(CellIndex.indexByString("${columns[k + 1]}1"));
+              sheetObject.cell(CellIndex.indexByString("${columns[k + 1]}1"));
           cell.value =
-          selectedFields.toList()[n]; // dynamic values support provided;
+              selectedFields.toList()[n]; // dynamic values support provided;
           cell.cellStyle = cellStyle;
           k++;
         }
@@ -305,21 +310,32 @@ bool loading = false;
       i++;
     }
 
-    excel.setDefaultSheet('Level Income');
+    excel.setDefaultSheet('events');
+    // excel.save(fileName: widget.eventName.toString());
+    // var fileBytes = excel.encode();
+    excel.setDefaultSheet('sales');
     var fileBytes = excel.encode();
-    File? file;
+    var directory = await getExternalStorageDirectory();
+    String outputFile =
+        "${directory?.path!}/${widget.eventName.toString()}-${DateTime.now().toString().substring(0, 16)}.xlsx";
 
-    final content = base64Encode(fileBytes!);
-    final anchor = AnchorElement(
-        href: "data:application/octet-stream;charset=utf-16le;base64,$content")
-      ..setAttribute("download", "FlexiBond Event .xlsx")
-      ..click();
+    File(outputFile)
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(fileBytes!);
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'file saved in application directory($outputFile)',
+        style: TextStyle(
+            fontFamily: 'Poppins',
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.6,
+            color: Colors.white),
+      ),
+      backgroundColor: Colors.redAccent,
+      duration: Duration(seconds: 2),
+    ));
+    OpenFile.open(outputFile);
   }
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -328,12 +344,13 @@ bool loading = false;
         actions: [
           IconButton(
               onPressed: () async {
+                print('23232323');
                 setState(() {
                   loading = true;
                 });
                 QuerySnapshot<Map<String, dynamic>> data =
-                await FirebaseFirestore.instance
-                    .collection('event')
+                    await FirebaseFirestore.instance
+                        .collection('event')
                         .doc(widget.event)
                         .collection('users')
                         .get();
@@ -368,7 +385,7 @@ bool loading = false;
           itemCount: Result.length,
           itemBuilder: (context, index) {
             return SizedBox(
-              height: 135,
+              height: 155,
               child: Container(
                 margin: EdgeInsets.only(left: 20, right: 20, top: 20),
                 decoration: BoxDecoration(
@@ -398,7 +415,7 @@ bool loading = false;
                       // mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          'Name : ' + Result[index]['userName'].toString(),
+                          'Name : ' + Result[index]['name'].toString(),
                           style: GoogleFonts.outfit(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
@@ -413,8 +430,22 @@ bool loading = false;
                           style: GoogleFonts.outfit(
                               fontSize: 16, fontWeight: FontWeight.w600),
                         ),
-                        Text('Place : ' + Result[index]['place'].toString(), style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600),),
-                        Text('Job : ' + Result[index]['job'].toString(), style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600),),
+                        Text(
+                          'Place : ' + Result[index]['place'].toString(),
+                          style: GoogleFonts.outfit(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          'Job : ' + Result[index]['job'].toString(),
+                          style: GoogleFonts.outfit(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          'Reward : ' +
+                              Result[index]['reward']['prize'].toString(),
+                          style: GoogleFonts.outfit(
+                              fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
                       ],
                     ),
                   ),

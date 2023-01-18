@@ -6,7 +6,6 @@ import '../fucntions.dart';
 import '../utils.dart';
 import 'homepage.dart';
 
-
 class Rewards extends StatefulWidget {
   var event;
   final String id;
@@ -50,6 +49,7 @@ class _RewardsState extends State<Rewards> {
   int selectedindex = 0;
 
   List rewards = [];
+  final ScrollController sroll = ScrollController();
   @override
   Widget build(BuildContext context) {
     var scrHeight = Utils().getScreenSize().height;
@@ -90,6 +90,7 @@ class _RewardsState extends State<Rewards> {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         child: SingleChildScrollView(
+          controller: sroll,
           child: Column(children: [
             Form(
               key: formKey,
@@ -149,12 +150,12 @@ class _RewardsState extends State<Rewards> {
                         obscureText: false,
                         controller: prizeController,
                         decoration: InputDecoration(
-                          labelText: 'Prize',
+                          labelText: 'Category',
                           labelStyle: GoogleFonts.outfit(
                               color: Colors.black,
                               fontSize: 16,
                               fontWeight: FontWeight.w500),
-                          hintText: 'Enter the Prize',
+                          hintText: 'Enter the Category',
                           hintStyle: GoogleFonts.outfit(
                               color: Colors.grey,
                               fontSize: 16,
@@ -388,7 +389,7 @@ class _RewardsState extends State<Rewards> {
                                             Row(
                                               children: [
                                                 Text(
-                                                  'Prize  :  ${rewards[index]['prize']}',
+                                                  'Category  :  ${rewards[index]['prize']}',
                                                   style: GoogleFonts.outfit(
                                                       fontWeight:
                                                           FontWeight.w600),

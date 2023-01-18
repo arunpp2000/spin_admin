@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:spin_admin/admin/viewwinners.dart';
 
-
 class Report extends StatefulWidget {
   const Report({Key? key}) : super(key: key);
 
@@ -99,6 +98,7 @@ class _ReportState extends State<Report> {
                       MaterialPageRoute(
                           builder: (context) => Winners(
                                 event: Events[index]['id'],
+                                eventName: Events[index]['eventName'],
                               )));
                 },
                 child: Container(
