@@ -209,57 +209,69 @@ class _EventViewState extends State<EventView> {
                     ],
                   ),
                   child: ListTile(
-                    title: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Expanded(
-                        child: Text(
-                          Events[index]['eventName'].toString().toUpperCase(),
-                          style: GoogleFonts.outfit(
-                              fontSize: 18, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-                    leading: Text('${index + 1}',
-                        style: GoogleFonts.outfit(
-                            fontSize: 16, fontWeight: FontWeight.w500)),
-                    subtitle: Text(
+                    title: Center(
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                    Events[index]['eventName']
+                                        .toString()
+                                        .toUpperCase(),
+                                    style: GoogleFonts.outfit(
+                                        fontSize: 20, fontWeight: FontWeight.w600)),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (buildContext) {
+                                          return AlertDialog(
+                                            title: Text('Delete'),
+                                            content: Text(
+                                                'Do you want to Delete the Event ?'),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(context),
+                                                  child: Text('Cancel')),
+                                              TextButton(
+                                                  onPressed: () {
+                                                    FirebaseFirestore.instance
+                                                        .collection('event')
+                                                        .doc(Events[index]['id'])
+                                                        .update({'delete': true});
+                                                    setState(() {});
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text('Ok')),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.black,
+                                  )),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Text(
                       'Scheduled Date: ' +
                           DateFormat('dd MMM yyyy')
                               .format(Events[index]['date'].toDate()),
                       style: GoogleFonts.outfit(
                           fontSize: 14, fontWeight: FontWeight.w500),
                     ),
-                    trailing: IconButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (buildContext) {
-                                return AlertDialog(
-                                  title: Text('Delete'),
-                                  content:
-                                      Text('Do you want to Delete the Event ?'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: Text('Cancel')),
-                                    TextButton(
-                                        onPressed: () {
-                                          FirebaseFirestore.instance
-                                              .collection('event')
-                                              .doc(Events[index]['id'])
-                                              .update({'delete': true});
-                                          setState(() {});
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text('Ok')),
-                                  ],
-                                );
-                              });
-                        },
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.black,
-                        )),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    // leading: Text('${index+1}'),
                   ),
                 ),
               ),
@@ -268,3 +280,47 @@ class _EventViewState extends State<EventView> {
     );
   }
 }
+// IconButton(
+// onPressed: () {
+// showDialog(
+// context: context,
+// builder: (buildContext) {
+// return AlertDialog(
+// title: Text('Delete'),
+// content:
+// Text('Do you want to Delete the Event ?'),
+// actions: [
+// TextButton(
+// onPressed: () => Navigator.pop(context),
+// child: Text('Cancel')),
+// TextButton(
+// onPressed: () {
+// FirebaseFirestore.instance
+//     .collection('event')
+//     .doc(Events[index]['id'])
+//     .update({'delete': true});
+// setState(() {});
+// Navigator.pop(context);
+// },
+// child: Text('Ok')),
+// ],
+// );
+// });
+// },
+// icon: Icon(
+// Icons.delete,
+// color: Colors.black,
+// )),
+//
+//
+//
+//
+//
+
+// Text(
+//                       'Scheduled Date: ' +
+//                           DateFormat('dd MMM yyyy')
+//                               .format(Events[index]['date'].toDate()),
+//                       style: GoogleFonts.outfit(
+//                           fontSize: 14, fontWeight: FontWeight.w500),
+//                     ),
