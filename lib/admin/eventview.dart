@@ -266,6 +266,9 @@ class _EventViewState extends State<EventView> {
                       style: GoogleFonts.outfit(
                           fontSize: 14, fontWeight: FontWeight.w500),
                     ),
+
+
+
                             ],
                           )
                         ],
