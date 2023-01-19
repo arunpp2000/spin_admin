@@ -44,6 +44,7 @@ class _LoginState extends State<Login> {
         .doc('settings')
         .snapshots()
         .listen((event) {
+          // pass=event.data()!['pass'];
       pass = event.get('pass');
       if (mounted) {
         setState(() {});
