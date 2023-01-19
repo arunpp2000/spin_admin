@@ -25,16 +25,36 @@ class _LoginState extends State<Login> {
   TextEditingController placeController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getRewards();
+  }
 
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+
   }
+  getRewards() {
+    FirebaseFirestore.instance
+        .collection('settings')
+        .doc('settings')
+        .snapshots()
+        .listen((event) {
+      pass = event.get('pass');
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+  var pass;
 
   @override
   Widget build(BuildContext context) {
+    print(pass);
     var scrHeight = Utils().getScreenSize().height;
     var scrWidth = Utils().getScreenSize().width;
     return SizedBox(
@@ -117,7 +137,7 @@ class _LoginState extends State<Login> {
                     height: Utils().getScreenSize().height * 0.06,
                     child: ElevatedButton(
                       onPressed: () async {
-                         if(nameController.text=='actizo123'){
+                         if(nameController.text==pass.toString()){
                            Navigator.push(
                              context,
                              MaterialPageRoute(builder: (context) => HomePage()),
